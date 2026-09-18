@@ -52,6 +52,9 @@ export function ProjectItem({ project, isDefault = false }: Props) {
 				</div>
 				<SetProjectCommand projectId={project.name} />
 			</div>
+			{/* routes.projects.* is hardcoded to /projects/default/... everywhere in this
+			   app (not just here) — clicking a non-default project still lands you on
+			   default's pipelines until that's parameterized with a real :projectId. */}
 			<Link to={routes.projects.pipelines.overview} className="absolute inset-0"></Link>
 		</Box>
 	);

@@ -5,9 +5,9 @@ import { ProjectItem } from "./project-item";
 import { Skeleton } from "@zenml-io/react-component-library";
 
 export function ProjectList() {
-	const projectQuery = useQuery({ ...projectQueries.projectDetail("default") });
+	const projectsQuery = useQuery({ ...projectQueries.projectList() });
 	const currentUserQuery = useCurrentUser();
-	if (projectQuery.isPending || currentUserQuery.isPending)
+	if (projectsQuery.isPending || currentUserQuery.isPending)
 		return (
 			<div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
 				<div className="h-full w-full">
@@ -15,18 +15,20 @@ export function ProjectList() {
 				</div>
 			</div>
 		);
-	if (projectQuery.isError) {
-		return <p>{projectQuery.error.message}</p>;
+	if (projectsQuery.isError) {
+		return <p>{projectsQuery.error.message}</p>;
 	}
-	const project = projectQuery.data;
+	const projects = projectsQuery.data.items;
 
 	const defaultProjectId = currentUserQuery.data?.body?.default_project_id;
 
 	return (
 		<ul className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-			<li>
-				<ProjectItem project={project} isDefault={defaultProjectId === project.id} />
-			</li>
+			{projects.map((project) => (
+				<li key={project.id}>
+					<ProjectItem project={project} isDefault={defaultProjectId === project.id} />
+				</li>
+			))}
 		</ul>
 	);
 }
