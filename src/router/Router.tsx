@@ -10,11 +10,12 @@ import { NonProjectScopedLayout } from "@/layouts/non-project-scoped/layout";
 import { ProjectTabsLayout } from "@/layouts/project-tabs/layout";
 import { ProjectSettingsLayout } from "@/layouts/settings/project-settings/layout";
 import { lazy } from "react";
-import { createBrowserRouter } from "react-router";
+import { createBrowserRouter, Outlet } from "react-router";
 import { PageBoundary } from "../error-boundaries/PageBoundary";
 import { GradientLayout } from "../layouts/GradientLayout";
 import { RootLayout } from "../layouts/RootLayout";
-import { authenticatedLayoutLoader, rootLoader } from "./loaders";
+import { authenticatedLayoutLoader, projectScopeLoader, rootLoader } from "./loaders";
+import { ProjectScopeBoundary } from "./ProjectScopeBoundary";
 import { withProtectedRoute } from "./ProtectedRoute";
 import { queryClient } from "./queryclient";
 import { routes } from "./routes";
@@ -222,58 +223,174 @@ export const router = createBrowserRouter([
 							}
 						]
 					},
-					// Project Scoped Tabs
+					// Project Scoped routes: every path here is under
+					// `/projects/:projectId/...` (see src/router/routes.tsx). This
+					// wrapping (pathless) route validates that :projectId exists and
+					// is accessible before rendering any child (FR-007); an
+					// unknown/inaccessible project renders the existing 404 page via
+					// ProjectScopeBoundary instead of any child silently rendering
+					// with no active project.
 					{
-						element: <ProjectTabsLayout />,
+						loader: projectScopeLoader(queryClient),
+						errorElement: <ProjectScopeBoundary />,
+						element: <Outlet />,
 						children: [
+							// Project Scoped Tabs
 							{
-								errorElement: <PageBoundary />,
-								path: routes.projects.pipelines.overview,
-								element: withProtectedRoute(<Pipelines />)
-							},
-							{
-								errorElement: <PageBoundary />,
-								path: routes.projects.snapshots.overview,
-								element: withProtectedRoute(<GlobalSnapshots />)
-							},
-							{
-								errorElement: <PageBoundary />,
-								path: routes.projects.runs.overview,
-								element: withProtectedRoute(<Runs />)
-							},
-							{
-								errorElement: <PageBoundary />,
-								path: routes.projects.deployments.overview,
-								element: withProtectedRoute(<DeploymentsList />)
-							},
-							// Models & Artifacts
-							{
-								errorElement: <PageBoundary />,
-								path: routes.projects.models.overview,
-								element: withProtectedRoute(<Models />)
-							},
-							{
-								errorElement: <PageBoundary />,
-								path: routes.projects.triggers.overview,
-								element: withProtectedRoute(<Triggers />)
-							},
-							{
-								errorElement: <PageBoundary />,
-								path: routes.projects.artifacts.overview,
-								element: withProtectedRoute(<Artifacts />)
-							},
-							{
-								element: <ProjectSettingsLayout />,
+								element: <ProjectTabsLayout />,
 								children: [
 									{
-										element: withProtectedRoute(<Repositories />),
-										path: routes.projects.settings.repositories.overview
+										errorElement: <PageBoundary />,
+										path: routes.projects.pipelines.overview(":projectId"),
+										element: withProtectedRoute(<Pipelines />)
 									},
 									{
-										element: withProtectedRoute(<ProfileSettingsPage />),
-										path: routes.projects.settings.profile
+										errorElement: <PageBoundary />,
+										path: routes.projects.snapshots.overview(":projectId"),
+										element: withProtectedRoute(<GlobalSnapshots />)
+									},
+									{
+										errorElement: <PageBoundary />,
+										path: routes.projects.runs.overview(":projectId"),
+										element: withProtectedRoute(<Runs />)
+									},
+									{
+										errorElement: <PageBoundary />,
+										path: routes.projects.deployments.overview(":projectId"),
+										element: withProtectedRoute(<DeploymentsList />)
+									},
+									// Models & Artifacts
+									{
+										errorElement: <PageBoundary />,
+										path: routes.projects.models.overview(":projectId"),
+										element: withProtectedRoute(<Models />)
+									},
+									{
+										errorElement: <PageBoundary />,
+										path: routes.projects.triggers.overview(":projectId"),
+										element: withProtectedRoute(<Triggers />)
+									},
+									{
+										errorElement: <PageBoundary />,
+										path: routes.projects.artifacts.overview(":projectId"),
+										element: withProtectedRoute(<Artifacts />)
+									},
+									{
+										element: <ProjectSettingsLayout />,
+										children: [
+											{
+												element: withProtectedRoute(<Repositories />),
+												path: routes.projects.settings.repositories.overview(":projectId")
+											},
+											{
+												element: withProtectedRoute(<ProfileSettingsPage />),
+												path: routes.projects.settings.profile(":projectId")
+											}
+										]
 									}
 								]
+							},
+							// Pipelines
+
+							{
+								errorElement: <PageBoundary />,
+								element: withProtectedRoute(<PipelineDetailLayout />),
+								children: [
+									{
+										errorElement: <PageBoundary />,
+										path: routes.projects.pipelines.detail.runs(":projectId", ":pipelineId"),
+										element: withProtectedRoute(<PipelineDetail />)
+									},
+									{
+										errorElement: <PageBoundary />,
+										path: routes.projects.pipelines.detail.snapshots(":projectId", ":pipelineId"),
+										element: withProtectedRoute(<PipelineDetailSnapshots />)
+									},
+									{
+										errorElement: <PageBoundary />,
+										path: routes.projects.pipelines.detail.deployments(":projectId", ":pipelineId"),
+										element: withProtectedRoute(<PipelineDetailDeployments />)
+									}
+								]
+							},
+
+							// Snapshots
+
+							{
+								errorElement: <PageBoundary />,
+								path: routes.projects.snapshots.create(":projectId"),
+								element: withProtectedRoute(<CreateSnapshot />)
+							},
+
+							{
+								errorElement: <PageBoundary />,
+								element: withProtectedRoute(<SnapshotDetailLayout />),
+								children: [
+									{
+										errorElement: <PageBoundary />,
+										path: routes.projects.snapshots.detail.overview(":projectId", ":snapshotId"),
+										element: withProtectedRoute(<SnapshotDetail />)
+									},
+									{
+										errorElement: <PageBoundary />,
+										path: routes.projects.snapshots.detail.runs(":projectId", ":snapshotId"),
+										element: withProtectedRoute(<SnapshotDetailRuns />)
+									}
+								]
+							},
+
+							// Deployments
+
+							{
+								errorElement: <PageBoundary />,
+								element: withProtectedRoute(<DeploymentDetailLayout />),
+								children: [
+									{
+										errorElement: <PageBoundary />,
+										path: routes.projects.deployments.detail.overview(
+											":projectId",
+											":deploymentId"
+										),
+										element: withProtectedRoute(<DeploymentDetail />)
+									},
+									{
+										errorElement: <PageBoundary />,
+										path: routes.projects.deployments.detail.runs(":projectId", ":deploymentId"),
+										element: withProtectedRoute(<DeploymentRuns />)
+									},
+									{
+										errorElement: <PageBoundary />,
+										path: routes.projects.deployments.detail.playground(
+											":projectId",
+											":deploymentId"
+										),
+										element: withProtectedRoute(<DeploymentPlayground />)
+									}
+								]
+							},
+
+							// Runs
+							{
+								errorElement: <PageBoundary />,
+								element: withProtectedRoute(<RunDetailLayout />),
+								children: [
+									{
+										errorElement: <PageBoundary />,
+										path: routes.projects.runs.detail(":projectId", ":runId"),
+										element: withProtectedRoute(<RunDetail />)
+									},
+									{
+										errorElement: <PageBoundary />,
+										path: routes.projects.runs.detailLogs(":projectId", ":runId"),
+										element: withProtectedRoute(<RunLogsPage />)
+									}
+								]
+							},
+
+							{
+								errorElement: <PageBoundary />,
+								path: routes.projects.runs.createSnapshot(":projectId", ":runId"),
+								element: withProtectedRoute(<CreateSnapshotFromRun />)
 							}
 						]
 					},
@@ -286,108 +403,6 @@ export const router = createBrowserRouter([
 						errorElement: <PageBoundary />,
 						path: routes.onboarding,
 						element: withProtectedRoute(<Onboarding />)
-					},
-					// Pipelines
-
-					{
-						errorElement: <PageBoundary />,
-						element: withProtectedRoute(<PipelineDetailLayout />),
-						children: [
-							{
-								errorElement: <PageBoundary />,
-								path: routes.projects.pipelines.detail.runs(":pipelineId"),
-								element: withProtectedRoute(<PipelineDetail />)
-							},
-							{
-								errorElement: <PageBoundary />,
-								path: routes.projects.pipelines.detail.snapshots(":pipelineId"),
-								element: withProtectedRoute(<PipelineDetailSnapshots />)
-							},
-							{
-								errorElement: <PageBoundary />,
-								path: routes.projects.pipelines.detail.deployments(":pipelineId"),
-								element: withProtectedRoute(<PipelineDetailDeployments />)
-							}
-						]
-					},
-
-					// Snapshots
-
-					{
-						errorElement: <PageBoundary />,
-						path: routes.projects.snapshots.create,
-						element: withProtectedRoute(<CreateSnapshot />)
-					},
-
-					{
-						errorElement: <PageBoundary />,
-						element: withProtectedRoute(<SnapshotDetailLayout />),
-						children: [
-							{
-								errorElement: <PageBoundary />,
-								path: routes.projects.snapshots.detail.overview(":snapshotId"),
-								element: withProtectedRoute(<SnapshotDetail />)
-							},
-							{
-								errorElement: <PageBoundary />,
-								path: routes.projects.snapshots.detail.runs(":snapshotId"),
-								element: withProtectedRoute(<SnapshotDetailRuns />)
-							}
-						]
-					},
-
-					// Deployments
-
-					{
-						errorElement: <PageBoundary />,
-						element: withProtectedRoute(<DeploymentDetailLayout />),
-						children: [
-							{
-								errorElement: <PageBoundary />,
-								path: routes.projects.deployments.detail.overview(":deploymentId"),
-								element: withProtectedRoute(<DeploymentDetail />)
-							},
-							{
-								errorElement: <PageBoundary />,
-								path: routes.projects.deployments.detail.runs(":deploymentId"),
-								element: withProtectedRoute(<DeploymentRuns />)
-							},
-							{
-								errorElement: <PageBoundary />,
-								path: routes.projects.deployments.detail.playground(":deploymentId"),
-								element: withProtectedRoute(<DeploymentPlayground />)
-							}
-						]
-					},
-
-					// {
-					// 	errorElement: <PageBoundary />,
-					// 	path: routes.projects.pipelines.detail.runs(":pipelineId"),
-					// 	element: withProtectedRoute(<PipelineDetail />)
-					// },
-
-					// Runs
-					{
-						errorElement: <PageBoundary />,
-						element: withProtectedRoute(<RunDetailLayout />),
-						children: [
-							{
-								errorElement: <PageBoundary />,
-								path: routes.projects.runs.detail(":runId"),
-								element: withProtectedRoute(<RunDetail />)
-							},
-							{
-								errorElement: <PageBoundary />,
-								path: routes.projects.runs.detailLogs(":runId"),
-								element: withProtectedRoute(<RunLogsPage />)
-							}
-						]
-					},
-
-					{
-						errorElement: <PageBoundary />,
-						path: routes.projects.runs.createSnapshot(":runId"),
-						element: withProtectedRoute(<CreateSnapshotFromRun />)
 					},
 					// Components
 					{

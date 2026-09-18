@@ -95,7 +95,10 @@ function performPageEvent(
 }
 
 function removeUUIDSegmentsFromPath(path: string): string {
-	const isPipelineNamespace = matchPath(routes.projects.pipelines.detail.runs(":pipelineId"), path);
+	const isPipelineNamespace = matchPath(
+		routes.projects.pipelines.detail.runs(":projectId", ":pipelineId"),
+		path
+	);
 
 	// special behavior, as the pipeline namespace is not a uuid
 	if (isPipelineNamespace) {
