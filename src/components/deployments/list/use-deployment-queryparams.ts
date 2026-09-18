@@ -1,3 +1,4 @@
+import { getActiveProjectId } from "@/router/active-project";
 import { DeploymentsListQueryParams } from "@/types/deployments";
 import { useSearchParams } from "react-router";
 import { z } from "zod";
@@ -19,5 +20,7 @@ export function useDeploymentQueryParams(): DeploymentsListQueryParams {
 		name: searchParams.get("name") || undefined
 	});
 
-	return { page, name, logical_operator: operator };
+	// `list_deployments_api_v1_deployments_get` has no `project_name_or_id` param
+	// (unlike pipelines/runs/snapshots) — only the generic `project` filter field.
+	return { page, name, logical_operator: operator, project: getActiveProjectId() };
 }
