@@ -8,6 +8,7 @@ import {
 } from "@zenml-io/react-component-library";
 import { useTourContext } from "./TourContext";
 import { useNavigate } from "react-router";
+import { getActiveProjectId } from "@/router/active-project";
 import { routes } from "@/router/routes";
 import TourImage from "@/assets/images/product-tour/tour-cover.webp";
 
@@ -51,7 +52,7 @@ export function StartTourDialog({ skipFunction }: Props) {
 						<Button
 							intent="primary"
 							onClick={() => {
-								navigate(routes.projects.pipelines.overview);
+								navigate(routes.projects.pipelines.overview(getActiveProjectId()));
 								setTourState((prev) => ({ ...prev, run: true, stepIndex: 0, tourActive: true }));
 							}}
 							size="md"

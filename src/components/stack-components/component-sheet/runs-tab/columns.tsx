@@ -3,6 +3,7 @@ import { CopyButton } from "@/components/CopyButton";
 import { DisplayDate } from "@/components/DisplayDate";
 import { ExecutionStatusIcon, getExecutionStatusColor } from "@/components/ExecutionStatus";
 import { RunName } from "@/components/runs/run-name";
+import { getActiveProjectId } from "@/router/active-project";
 import { routes } from "@/router/routes";
 import { ExecutionStatus, PipelineRun } from "@/types/pipeline-runs";
 import { ColumnDef } from "@tanstack/react-table";
@@ -37,7 +38,7 @@ export const runsColumns: ColumnDef<PipelineRun>[] = [
 					<div>
 						<div className="flex items-center gap-1">
 							<Link
-								to={routes.projects.runs.detail(id)}
+								to={routes.projects.runs.detail(getActiveProjectId(), id)}
 								className="grid grid-cols-1 items-center gap-1"
 							>
 								<span className="truncate text-text-md font-semibold text-theme-text-primary">
@@ -55,7 +56,10 @@ export const runsColumns: ColumnDef<PipelineRun>[] = [
 
 							<CopyButton copyText={name} />
 						</div>
-						<Link to={routes.projects.runs.detail(id)} className="flex items-center gap-1">
+						<Link
+							to={routes.projects.runs.detail(getActiveProjectId(), id)}
+							className="flex items-center gap-1"
+						>
 							<p className="text-text-xs text-theme-text-secondary">{id.split("-")[0]}</p>
 							<CopyButton copyText={id} />
 						</Link>

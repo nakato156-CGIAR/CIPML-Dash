@@ -1,4 +1,5 @@
 import { useRouteSegment } from "@/hooks/use-route-segment";
+import { getActiveProjectId } from "@/router/active-project";
 import { routes } from "@/router/routes";
 import {
 	ScrollArea,
@@ -26,30 +27,31 @@ export function ProjectTabs() {
 	const segment = (useRouteSegment(2) as TabValues) || "pipelines";
 
 	function changeVal(val: string) {
+		const projectId = getActiveProjectId();
 		switch (val) {
 			case "pipelines":
-				navigate(routes.projects.pipelines.overview);
+				navigate(routes.projects.pipelines.overview(projectId));
 				break;
 			case "runs":
-				navigate(routes.projects.runs.overview);
+				navigate(routes.projects.runs.overview(projectId));
 				break;
 			case "deployments":
-				navigate(routes.projects.deployments.overview);
+				navigate(routes.projects.deployments.overview(projectId));
 				break;
 			case "artifacts":
-				navigate(routes.projects.artifacts.overview);
+				navigate(routes.projects.artifacts.overview(projectId));
 				break;
 			case "models":
-				navigate(routes.projects.models.overview);
+				navigate(routes.projects.models.overview(projectId));
 				break;
 			case "triggers":
-				navigate(routes.projects.triggers.overview);
+				navigate(routes.projects.triggers.overview(projectId));
 				break;
 			case "snapshots":
-				navigate(routes.projects.snapshots.overview);
+				navigate(routes.projects.snapshots.overview(projectId));
 				break;
 			case "settings":
-				navigate(routes.projects.settings.repositories.overview);
+				navigate(routes.projects.settings.repositories.overview(projectId));
 				break;
 		}
 	}

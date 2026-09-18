@@ -1,5 +1,6 @@
 import { snapshotBreadcrumb } from "@/components/breadcrumbs/library";
 import { useBreadcrumbsContext } from "@/layouts/AuthenticatedLayout/BreadcrumbsContext";
+import { getActiveProjectId } from "@/router/active-project";
 import { routes } from "@/router/routes";
 
 import { useEffect } from "react";
@@ -9,10 +10,10 @@ export function useCreateSnapshotBreadcrumbs() {
 
 	useEffect(() => {
 		setBreadcrumbs([
-			snapshotBreadcrumb,
+			snapshotBreadcrumb(),
 			{
 				label: "Create",
-				href: routes.projects.snapshots.create
+				href: routes.projects.snapshots.create(getActiveProjectId())
 			}
 		]);
 	}, [setBreadcrumbs]);

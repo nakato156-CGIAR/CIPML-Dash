@@ -6,6 +6,7 @@ import AlertCircle from "@/assets/icons/alert-circle.svg?react";
 import { RunSheetHeadline } from "./headline";
 import { Button } from "@zenml-io/react-component-library/components/server";
 import { Link } from "react-router";
+import { getActiveProjectId } from "@/router/active-project";
 import { routes } from "@/router/routes";
 import Maximize from "@/assets/icons/expand-full.svg?react";
 
@@ -47,7 +48,7 @@ function MaximizeButton({ runId }: Props) {
 			intent="secondary"
 			emphasis="minimal"
 		>
-			<Link to={routes.projects.runs.detail(runId)}>
+			<Link to={routes.projects.runs.detail(getActiveProjectId(), runId)}>
 				<Maximize className="h-5 w-5 fill-neutral-500" />
 			</Link>
 		</Button>

@@ -1,4 +1,5 @@
 import RunIcon from "@/assets/icons/terminal-square.svg?react";
+import { getActiveProjectId } from "@/router/active-project";
 import { routes } from "@/router/routes";
 import { ExecutionStatus } from "@/types/pipeline-runs";
 import { Tag } from "@zenml-io/react-component-library/components/server";
@@ -12,7 +13,7 @@ type Props = {
 
 export function RunStatusTag({ runId, status }: Props) {
 	return (
-		<Link to={routes.projects.runs.detail(runId)}>
+		<Link to={routes.projects.runs.detail(getActiveProjectId(), runId)}>
 			<Tag
 				emphasis="subtle"
 				rounded={false}

@@ -1,3 +1,4 @@
+import { getActiveProjectId } from "@/router/active-project";
 import { routes } from "@/router/routes";
 import { cn, Tag } from "@zenml-io/react-component-library";
 import { ComponentPropsWithoutRef } from "react";
@@ -17,7 +18,7 @@ export function PipelineLink({
 	...props
 }: Props) {
 	return (
-		<Link to={routes.projects.pipelines.detail.runs(pipelineId)}>
+		<Link to={routes.projects.pipelines.detail.runs(getActiveProjectId(), pipelineId)}>
 			<Tag
 				color="purple"
 				className={cn("inline-flex items-center gap-0.5 text-primary-400", className)}

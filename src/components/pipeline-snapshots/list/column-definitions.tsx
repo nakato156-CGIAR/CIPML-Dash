@@ -7,6 +7,7 @@ import { PipelineLink } from "@/components/pipelines/pipeline-link";
 import { RunStatusTag } from "@/components/runs/run-status-tag";
 import { ActionCell } from "@/components/tables/action-cell";
 import { getFirstUuidSegment } from "@/lib/strings";
+import { getActiveProjectId } from "@/router/active-project";
 import { routes } from "@/router/routes";
 import { PipelineSnapshot } from "@/types/pipeline-snapshots";
 import { ColumnDef } from "@tanstack/react-table";
@@ -58,7 +59,7 @@ export function createSnapshotNameColumn(): ColumnDef<PipelineSnapshot> {
 					<div>
 						<div className="flex items-center gap-1">
 							<Link
-								to={routes.projects.snapshots.detail.overview(id)}
+								to={routes.projects.snapshots.detail.overview(getActiveProjectId(), id)}
 								className="grid grid-cols-1 items-center gap-1"
 							>
 								<span className="truncate text-text-md font-semibold text-theme-text-primary">
@@ -69,7 +70,7 @@ export function createSnapshotNameColumn(): ColumnDef<PipelineSnapshot> {
 							<CopyButton copyText={name ?? ""} />
 						</div>
 						<Link
-							to={routes.projects.snapshots.detail.overview(id)}
+							to={routes.projects.snapshots.detail.overview(getActiveProjectId(), id)}
 							className="flex items-center gap-1"
 						>
 							<p className="text-text-xs text-theme-text-secondary">{getFirstUuidSegment(id)}</p>
@@ -93,7 +94,7 @@ export function createSnapshotDeploymentColumn(): ColumnDef<PipelineSnapshot> {
 			const id = deployment?.id;
 			if (!status || !id) return null;
 			return (
-				<Link to={routes.projects.deployments.detail.overview(id)}>
+				<Link to={routes.projects.deployments.detail.overview(getActiveProjectId(), id)}>
 					<DeploymentStatusTag status={status} />
 				</Link>
 			);

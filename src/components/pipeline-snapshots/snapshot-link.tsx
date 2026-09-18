@@ -1,4 +1,5 @@
 import SnapshotIcon from "@/assets/icons/snapshot.svg?react";
+import { getActiveProjectId } from "@/router/active-project";
 import { routes } from "@/router/routes";
 import { Tag } from "@zenml-io/react-component-library";
 import { ComponentProps } from "react";
@@ -14,7 +15,7 @@ export function SnapshotLink({ snapshotId, snapshotName, size, ...props }: Props
 	const iconClassName = iconSize === "sm" ? "size-4" : "size-3";
 
 	return (
-		<Link to={routes.projects.snapshots.detail.overview(snapshotId)}>
+		<Link to={routes.projects.snapshots.detail.overview(getActiveProjectId(), snapshotId)}>
 			<Tag
 				color="grey"
 				className="inline-flex items-center gap-0.5 text-theme-text-primary"

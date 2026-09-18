@@ -11,6 +11,7 @@ import { componentQueries } from "@/data/components";
 import { usePipelineRun } from "@/data/pipeline-runs/pipeline-run-detail-query";
 import { useStepDetail } from "@/data/steps/step-detail-query";
 import { getArtifactVersionSnippet } from "@/lib/code-snippets";
+import { getActiveProjectId } from "@/router/active-project";
 import { routes } from "@/router/routes";
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -148,7 +149,7 @@ function ProducerKeys({ producerRunId }: { producerRunId: string }) {
 				label="Producer Run"
 				value={
 					producerRunId ? (
-						<Link to={routes.projects.runs.detail(producerRunId)}>
+						<Link to={routes.projects.runs.detail(getActiveProjectId(), producerRunId)}>
 							<Tag
 								emphasis="subtle"
 								rounded={false}

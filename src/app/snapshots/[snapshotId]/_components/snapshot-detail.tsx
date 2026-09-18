@@ -5,6 +5,7 @@ import { KeyValue } from "@/components/KeyValue";
 import { NotAvailable } from "@/components/not-available";
 import { PipelineLink } from "@/components/pipelines/pipeline-link";
 import { RepoBadge } from "@/components/repositories/RepoBadge";
+import { getActiveProjectId } from "@/router/active-project";
 import { routes } from "@/router/routes";
 import { PipelineSnapshot } from "@/types/pipeline-snapshots";
 import {
@@ -74,7 +75,12 @@ function DetailsContent({ snapshot }: Props) {
 						label="Deployment"
 						value={
 							deploymentId && deploymentStatus ? (
-								<Link to={routes.projects.deployments.detail.overview(deploymentId)}>
+								<Link
+									to={routes.projects.deployments.detail.overview(
+										getActiveProjectId(),
+										deploymentId
+									)}
+								>
 									<DeploymentStatusTag size="sm" status={deploymentStatus} />
 								</Link>
 							) : (
