@@ -107,3 +107,12 @@
 - Copy `.env.example` to `.env.local`, set `VITE_API_BASE_URL` and related keys, and keep secrets out of git.
 - After backend schema updates, rerun `pnpm generate:types` to refresh helpers consumed in `src/lib/server.ts`.
 - Types are generated into `src/types`, with data objects coming from the `components` namespace and query params from `operations`. Prefer `type` aliases over `interface` unless inheritance is unavoidable.
+
+## Fork-Specific Tooling (this fork only)
+
+This checkout is a personal fork of upstream `zenml-io/zenml-dashboard`, tracked separately from everything above. It exists to patch an OSS dashboard limitation: the self-hosted server's `/api/v1/projects` REST API already supports arbitrary projects, but the stock dashboard UI restricts navigation to the `default` project. This section is fork-local and should not be upstreamed.
+
+- **Branch & remotes**: work happens on `custom/multi-project`. Only the `upstream` remote is configured (`https://github.com/zenml-io/zenml-dashboard`); there is no `origin` yet (no GitHub-hosted fork under the user's account — a known, separately-tracked blocker).
+- **Issue tracking (beads / `bd`)**: this fork uses [`bd`](https://github.com/gastownhall/beads) for issue tracking, with its own local `.beads/` database (prefix `zmd`). Basic commands: `bd ready` (find available work), `bd show <id>` (view details), `bd update <id> --claim` (claim work), `bd close <id>` (complete work). `bd init` set `core.hooksPath=.beads/hooks`, and those hooks preserve/chain to this repo's existing Husky hooks (e.g. pre-commit still runs `npx lint-staged` first).
+- **Spec-driven feature work (spec-kit)**: this fork uses [github/spec-kit](https://github.com/github/spec-kit) (`.specify/`, plus `speckit-*` skills under `.claude/skills/`) to write a spec before implementing non-trivial fork-specific changes. Specs live under `specs/<NNN>-<short-name>/spec.md`.
+- **Current spec/bead**: the routes.tsx multi-project routing gap (`src/router/routes.tsx` hardcodes `"default"` into every `routes.projects.*` path) is specified at `specs/001-project-scoped-routing/spec.md` and tracked as bead `zmd-9ll`, left open — implementation is a future task.
