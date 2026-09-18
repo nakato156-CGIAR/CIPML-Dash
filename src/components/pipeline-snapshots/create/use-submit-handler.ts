@@ -1,6 +1,7 @@
 import { fetchPipelineRun } from "@/data/pipeline-runs/pipeline-run-detail-query";
 import { pipelineSnapshotQueries } from "@/data/pipeline-snapshots";
 import { useUpdateSnapshot } from "@/data/pipeline-snapshots/update-snapshot";
+import { getActiveProjectId } from "@/router/active-project";
 import { routes } from "@/router/routes";
 import { useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@zenml-io/react-component-library";
@@ -14,7 +15,7 @@ export function useSubmitHandler(originalSnapshotId: string | null) {
 	const { mutate, isPending } = useUpdateSnapshot({
 		onSuccess(data) {
 			queryClient.invalidateQueries({ queryKey: [...pipelineSnapshotQueries.all, data.id] });
-			navigate(routes.projects.snapshots.detail.overview(data.id));
+			navigate(routes.projects.snapshots.detail.overview(getActiveProjectId(), data.id));
 		},
 		onError(error) {
 			toast({

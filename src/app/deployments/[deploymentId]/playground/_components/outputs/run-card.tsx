@@ -1,6 +1,7 @@
 import { ExecutionStatusIcon } from "@/components/ExecutionStatus";
 import { RunName } from "@/components/runs/run-name";
 import { secondsToTimeString } from "@/lib/dates";
+import { getActiveProjectId } from "@/router/active-project";
 import { routes } from "@/router/routes";
 import { Box, Button } from "@zenml-io/react-component-library";
 import { Link } from "react-router";
@@ -41,7 +42,7 @@ export function PlaygroundRunCard({ runId, runName, duration, success, runIndex 
 						className="w-fit whitespace-nowrap"
 						asChild
 					>
-						<Link to={routes.projects.runs.detail(runId)}>Run Details</Link>
+						<Link to={routes.projects.runs.detail(getActiveProjectId(), runId)}>Run Details</Link>
 					</Button>
 				)}
 			</div>

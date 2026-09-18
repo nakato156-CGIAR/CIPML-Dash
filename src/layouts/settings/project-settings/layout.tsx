@@ -3,6 +3,7 @@ import { useCurrentUser } from "@/data/users/current-user-query";
 import { Skeleton } from "@zenml-io/react-component-library";
 import { Outlet } from "react-router";
 import { DisplayProject } from "./project-display";
+import { getActiveProjectId } from "@/router/active-project";
 import { routes } from "@/router/routes";
 import { SettingsMenu } from "../Menu";
 
@@ -46,7 +47,7 @@ function ProjectSettingsMenu() {
 		return [
 			{
 				name: "Repositories",
-				href: routes.projects.settings.repositories.overview
+				href: routes.projects.settings.repositories.overview(getActiveProjectId())
 			}
 		];
 	}
@@ -60,7 +61,7 @@ function ProfileSettingsMenu() {
 		return [
 			{
 				name: "Profile",
-				href: routes.projects.settings.profile
+				href: routes.projects.settings.profile(getActiveProjectId())
 			}
 		];
 	}

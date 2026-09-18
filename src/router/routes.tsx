@@ -1,3 +1,15 @@
+/**
+ * A project ID segment for a project-scoped URL.
+ *
+ * Real project IDs are URL-encoded (spec edge case: project IDs may contain
+ * spaces/unicode/slashes). Route *pattern* placeholders (e.g. ":projectId",
+ * used by src/router/Router.tsx and src/hooks/usePageTitle.ts to register/match
+ * routes) are passed through untouched since they aren't real values.
+ */
+function projectSegment(projectId: string): string {
+	return projectId.startsWith(":") ? projectId : encodeURIComponent(projectId);
+}
+
 export const routes = {
 	home: "/",
 	activateServer: "/activate-server",
@@ -28,50 +40,64 @@ export const routes = {
 		edit: (stackId: string) => `/stacks/${stackId}/edit`
 	},
 	projects: {
+		// Not project-scoped: this is the list you pick a project FROM.
 		overview: "/projects",
 		runs: {
-			overview: "/projects/default/runs",
-			detail: (id: string) => `/projects/default/runs/${id}`,
-			detailLogs: (id: string) => `/projects/default/runs/${id}/logs`,
-			createSnapshot: (id: string) => `/projects/default/runs/${id}/create-snapshot`
+			overview: (projectId: string) => `/projects/${projectSegment(projectId)}/runs`,
+			detail: (projectId: string, id: string) =>
+				`/projects/${projectSegment(projectId)}/runs/${id}`,
+			detailLogs: (projectId: string, id: string) =>
+				`/projects/${projectSegment(projectId)}/runs/${id}/logs`,
+			createSnapshot: (projectId: string, id: string) =>
+				`/projects/${projectSegment(projectId)}/runs/${id}/create-snapshot`
 		},
 		pipelines: {
-			overview: "/projects/default/pipelines",
+			overview: (projectId: string) => `/projects/${projectSegment(projectId)}/pipelines`,
 			detail: {
-				runs: (pipelineId: string) => `/projects/default/pipelines/${pipelineId}/runs`,
-				snapshots: (pipelineId: string) => `/projects/default/pipelines/${pipelineId}/snapshots`,
-				deployments: (pipelineId: string) => `/projects/default/pipelines/${pipelineId}/deployments`
+				runs: (projectId: string, pipelineId: string) =>
+					`/projects/${projectSegment(projectId)}/pipelines/${pipelineId}/runs`,
+				snapshots: (projectId: string, pipelineId: string) =>
+					`/projects/${projectSegment(projectId)}/pipelines/${pipelineId}/snapshots`,
+				deployments: (projectId: string, pipelineId: string) =>
+					`/projects/${projectSegment(projectId)}/pipelines/${pipelineId}/deployments`
 			}
 		},
 		snapshots: {
-			overview: "/projects/default/snapshots",
-			create: "/projects/default/snapshots/create",
+			overview: (projectId: string) => `/projects/${projectSegment(projectId)}/snapshots`,
+			create: (projectId: string) => `/projects/${projectSegment(projectId)}/snapshots/create`,
 			detail: {
-				overview: (snapshotId: string) => `/projects/default/snapshots/${snapshotId}`,
-				runs: (snapshotId: string) => `/projects/default/snapshots/${snapshotId}/runs`
+				overview: (projectId: string, snapshotId: string) =>
+					`/projects/${projectSegment(projectId)}/snapshots/${snapshotId}`,
+				runs: (projectId: string, snapshotId: string) =>
+					`/projects/${projectSegment(projectId)}/snapshots/${snapshotId}/runs`
 			}
 		},
 		deployments: {
-			overview: "/projects/default/deployments",
+			overview: (projectId: string) => `/projects/${projectSegment(projectId)}/deployments`,
 			detail: {
-				overview: (deploymentId: string) => `/projects/default/deployments/${deploymentId}`,
-				runs: (deploymentId: string) => `/projects/default/deployments/${deploymentId}/runs`,
-				playground: (deploymentId: string) =>
-					`/projects/default/deployments/${deploymentId}/playground`
+				overview: (projectId: string, deploymentId: string) =>
+					`/projects/${projectSegment(projectId)}/deployments/${deploymentId}`,
+				runs: (projectId: string, deploymentId: string) =>
+					`/projects/${projectSegment(projectId)}/deployments/${deploymentId}/runs`,
+				playground: (projectId: string, deploymentId: string) =>
+					`/projects/${projectSegment(projectId)}/deployments/${deploymentId}/playground`
 			}
 		},
 		triggers: {
-			overview: "/projects/default/triggers"
+			overview: (projectId: string) => `/projects/${projectSegment(projectId)}/triggers`
 		},
 		models: {
-			overview: "/projects/default/models"
+			overview: (projectId: string) => `/projects/${projectSegment(projectId)}/models`
 		},
 		artifacts: {
-			overview: "/projects/default/artifacts"
+			overview: (projectId: string) => `/projects/${projectSegment(projectId)}/artifacts`
 		},
 		settings: {
-			repositories: { overview: "/projects/default/settings/repositories" },
-			profile: "/projects/default/settings/profile"
+			repositories: {
+				overview: (projectId: string) =>
+					`/projects/${projectSegment(projectId)}/settings/repositories`
+			},
+			profile: (projectId: string) => `/projects/${projectSegment(projectId)}/settings/profile`
 		}
 	},
 	settings: {

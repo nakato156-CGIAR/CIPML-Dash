@@ -7,6 +7,7 @@ import { SnapshotLink } from "@/components/pipeline-snapshots/snapshot-link";
 import { RunName } from "@/components/runs/run-name";
 import { ActionCell } from "@/components/tables/action-cell";
 import { ScheduleTag } from "@/components/triggers/schedule-tag";
+import { getActiveProjectId } from "@/router/active-project";
 import { routes } from "@/router/routes";
 import { PipelineRun, PipelineRunBody } from "@/types/pipeline-runs";
 import { Stack } from "@/types/stack";
@@ -74,7 +75,7 @@ export function getPipelineDetailColumns(): ColumnDef<PipelineRun>[] {
 						<div>
 							<div className="flex items-center gap-1">
 								<Link
-									to={routes.projects.runs.detail(id)}
+									to={routes.projects.runs.detail(getActiveProjectId(), id)}
 									className="grid grid-cols-1 items-center gap-1"
 								>
 									<h2 className="truncate text-text-md font-semibold">
@@ -91,7 +92,10 @@ export function getPipelineDetailColumns(): ColumnDef<PipelineRun>[] {
 								</TooltipProvider>
 								<CopyButton copyText={name} />
 							</div>
-							<Link to={routes.projects.runs.detail(id)} className="flex items-center gap-1">
+							<Link
+								to={routes.projects.runs.detail(getActiveProjectId(), id)}
+								className="flex items-center gap-1"
+							>
 								<p className="text-text-xs text-theme-text-secondary">{id.split("-")[0]}</p>
 								<CopyButton copyText={id} />
 							</Link>

@@ -1,5 +1,6 @@
 import { DeploymentStatusTag } from "@/components/deployments/deployment-status-tag";
 import { deploymentQueries } from "@/data/deployments";
+import { getActiveProjectId } from "@/router/active-project";
 import { routes } from "@/router/routes";
 import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@zenml-io/react-component-library";
@@ -18,7 +19,7 @@ export function DeploymentTag({ deploymentId }: Props) {
 	const deployment = deploymentQuery.data;
 
 	return (
-		<Link to={routes.projects.deployments.detail.overview(deploymentId)}>
+		<Link to={routes.projects.deployments.detail.overview(getActiveProjectId(), deploymentId)}>
 			<DeploymentStatusTag size="sm" status={deployment.body?.status ?? undefined} />
 		</Link>
 	);

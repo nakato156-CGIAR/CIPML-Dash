@@ -1,5 +1,6 @@
 import { pipelineBreadcrumb } from "@/components/breadcrumbs/library";
 import { useBreadcrumbsContext } from "@/layouts/AuthenticatedLayout/BreadcrumbsContext";
+import { getActiveProjectId } from "@/router/active-project";
 import { routes } from "@/router/routes";
 import { Pipeline } from "@/types/pipelines";
 import { useEffect } from "react";
@@ -10,10 +11,10 @@ export function usePipelineDetailSnapshotsBreadcrumbs(pipeline?: Pipeline) {
 	useEffect(() => {
 		if (pipeline) {
 			setBreadcrumbs([
-				pipelineBreadcrumb,
+				pipelineBreadcrumb(),
 				{
 					label: pipeline.name,
-					href: routes.projects.pipelines.detail.runs(pipeline.id)
+					href: routes.projects.pipelines.detail.runs(getActiveProjectId(), pipeline.id)
 				},
 				{
 					label: "Snapshots",

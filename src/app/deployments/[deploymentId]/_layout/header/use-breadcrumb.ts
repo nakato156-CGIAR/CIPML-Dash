@@ -1,5 +1,6 @@
 import { deploymentBreadcrumb } from "@/components/breadcrumbs/library";
 import { useBreadcrumbsContext } from "@/layouts/AuthenticatedLayout/BreadcrumbsContext";
+import { getActiveProjectId } from "@/router/active-project";
 import { routes } from "@/router/routes";
 import { Deployment } from "@/types/deployments";
 import { useEffect } from "react";
@@ -10,11 +11,11 @@ export function usePipelineDetailRunsBreadcrumbs(activeTab: string, deployment?:
 	useEffect(() => {
 		if (deployment) {
 			setBreadcrumbs([
-				deploymentBreadcrumb,
+				deploymentBreadcrumb(),
 				{
 					disabled: true,
 					label: deployment.name,
-					href: routes.projects.deployments.detail.overview(deployment.id)
+					href: routes.projects.deployments.detail.overview(getActiveProjectId(), deployment.id)
 				},
 				{
 					label: activeTab,

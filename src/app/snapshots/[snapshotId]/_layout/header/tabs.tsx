@@ -1,6 +1,7 @@
 import InfoIcon from "@/assets/icons/info.svg?react";
 import RunIcon from "@/assets/icons/terminal.svg?react";
 import { TabIcon } from "@/components/tab-icon";
+import { getActiveProjectId } from "@/router/active-project";
 import { routes } from "@/router/routes";
 import {
 	ScrollArea,
@@ -17,6 +18,7 @@ export function SnapshotDetailTabs() {
 		snapshotId: string;
 	};
 	const activeTab = useActiveTab();
+	const projectId = getActiveProjectId();
 
 	return (
 		<Tabs value={activeTab}>
@@ -24,13 +26,13 @@ export function SnapshotDetailTabs() {
 				<div className="flex items-end justify-between gap-3">
 					<TabsList className="flex-nowrap border-none [&_*]:flex [&_*]:items-center [&_*]:gap-1">
 						<TabsTrigger asChild value="overview">
-							<Link to={routes.projects.snapshots.detail.overview(snapshotId)}>
+							<Link to={routes.projects.snapshots.detail.overview(projectId, snapshotId)}>
 								<TabIcon icon={InfoIcon} />
 								<span>Overview</span>
 							</Link>
 						</TabsTrigger>
 						<TabsTrigger asChild value="runs">
-							<Link to={routes.projects.snapshots.detail.runs(snapshotId)}>
+							<Link to={routes.projects.snapshots.detail.runs(projectId, snapshotId)}>
 								<TabIcon icon={RunIcon} />
 								<span>Runs</span>
 							</Link>

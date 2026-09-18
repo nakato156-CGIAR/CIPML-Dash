@@ -1,3 +1,4 @@
+import { getActiveProjectId } from "@/router/active-project";
 import { PipelineListParams } from "@/types/pipelines";
 import { useSearchParams } from "react-router";
 
@@ -20,5 +21,5 @@ export function usePipelineOverviewSearchParams(): PipelineListParams {
 		operator: searchParams.get("operator") || undefined
 	});
 
-	return { page, name, logical_operator: operator };
+	return { page, name, logical_operator: operator, project_name_or_id: getActiveProjectId() };
 }

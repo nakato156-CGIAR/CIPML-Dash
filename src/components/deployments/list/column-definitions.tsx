@@ -6,6 +6,7 @@ import { InlineAvatar } from "@/components/InlineAvatar";
 import { SnapshotLink } from "@/components/pipeline-snapshots/snapshot-link";
 import { PipelineLink } from "@/components/pipelines/pipeline-link";
 import { getFirstUuidSegment } from "@/lib/strings";
+import { getActiveProjectId } from "@/router/active-project";
 import { routes } from "@/router/routes";
 import { Deployment } from "@/types/deployments";
 import { ColumnDef } from "@tanstack/react-table";
@@ -26,7 +27,7 @@ export function createDeploymentNameColumn(): ColumnDef<Deployment> {
 					<div>
 						<div className="flex items-center gap-1">
 							<Link
-								to={routes.projects.deployments.detail.overview(id)}
+								to={routes.projects.deployments.detail.overview(getActiveProjectId(), id)}
 								className="grid grid-cols-1 items-center gap-1"
 							>
 								<span className="truncate text-text-md font-semibold text-theme-text-primary">
@@ -38,7 +39,7 @@ export function createDeploymentNameColumn(): ColumnDef<Deployment> {
 						</div>
 						<div className="flex items-center gap-1">
 							<Link
-								to={routes.projects.deployments.detail.overview(id)}
+								to={routes.projects.deployments.detail.overview(getActiveProjectId(), id)}
 								className="flex items-center gap-1"
 							>
 								<p className="text-text-xs text-theme-text-secondary">{getFirstUuidSegment(id)}</p>

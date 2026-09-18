@@ -1,6 +1,7 @@
 import { pipelineBreadcrumb, runBreadcrumb } from "@/components/breadcrumbs/library";
 import { useBreadcrumbsContext } from "@/layouts/AuthenticatedLayout/BreadcrumbsContext";
 import { RunName } from "@/components/runs/run-name";
+import { getActiveProjectId } from "@/router/active-project";
 import { routes } from "@/router/routes";
 import { PipelineRun } from "@/types/pipeline-runs";
 
@@ -15,25 +16,26 @@ export function useRunDetailBreadcrumbs(run?: PipelineRun) {
 		if (!run) return;
 
 		const pipeline = run.resources?.pipeline;
+		const projectId = getActiveProjectId();
 
 		const baseCrumbs = pipeline
 			? [
-					pipelineBreadcrumb,
+					pipelineBreadcrumb(),
 					{
 						label: pipeline.name || "",
-						href: routes.projects.pipelines.detail.runs(pipeline.id)
+						href: routes.projects.pipelines.detail.runs(projectId, pipeline.id)
 					}
 				]
-			: [runBreadcrumb];
+			: [runBreadcrumb()];
 
 		setBreadcrumbs([
 			...baseCrumbs,
 			{
 				label: <RunName name={run.name} index={run.body?.index} />,
-				href: routes.projects.runs.detail(run.id)
+				href: routes.projects.runs.detail(projectId, run.id)
 			},
 			...(activeTab === "logs"
-				? [{ label: "Logs", href: routes.projects.runs.detailLogs(run.id) }]
+				? [{ label: "Logs", href: routes.projects.runs.detailLogs(projectId, run.id) }]
 				: [])
 		]);
 	}, [setBreadcrumbs, run, activeTab]);

@@ -1,3 +1,4 @@
+import { getActiveProjectId } from "@/router/active-project";
 import { routes } from "@/router/routes";
 import { BreadcrumbSegment } from "./types";
 
@@ -6,30 +7,33 @@ export const componentBreadcrumb: BreadcrumbSegment = {
 	href: routes.components.overview
 };
 
-export const pipelineBreadcrumb: BreadcrumbSegment = {
+// The following are functions (not plain objects) because they must resolve
+// against whichever project is active *when used*, not whichever project
+// happened to be active when this module was first imported.
+export const pipelineBreadcrumb = (): BreadcrumbSegment => ({
 	label: "Pipelines",
-	href: routes.projects.pipelines.overview
-};
+	href: routes.projects.pipelines.overview(getActiveProjectId())
+});
 
-export const deploymentBreadcrumb: BreadcrumbSegment = {
+export const deploymentBreadcrumb = (): BreadcrumbSegment => ({
 	label: "Deployments",
-	href: routes.projects.deployments.overview
-};
+	href: routes.projects.deployments.overview(getActiveProjectId())
+});
 
-export const snapshotBreadcrumb: BreadcrumbSegment = {
+export const snapshotBreadcrumb = (): BreadcrumbSegment => ({
 	label: "Snapshots",
-	href: routes.projects.snapshots.overview
-};
+	href: routes.projects.snapshots.overview(getActiveProjectId())
+});
 
 export const stacksBreadcrumb: BreadcrumbSegment = {
 	label: "Stacks",
 	href: routes.stacks.overview
 };
 
-export const runBreadcrumb: BreadcrumbSegment = {
+export const runBreadcrumb = (): BreadcrumbSegment => ({
 	label: "Runs",
-	href: routes.projects.runs.overview
-};
+	href: routes.projects.runs.overview(getActiveProjectId())
+});
 
 export const ServerSettingsBreadcrumb: BreadcrumbSegment = {
 	label: "Settings",

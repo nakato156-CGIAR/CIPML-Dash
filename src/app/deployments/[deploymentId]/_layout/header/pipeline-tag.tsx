@@ -1,4 +1,5 @@
 import PipelineIcon from "@/assets/icons/pipeline.svg?react";
+import { getActiveProjectId } from "@/router/active-project";
 import { routes } from "@/router/routes";
 import { Tag } from "@zenml-io/react-component-library";
 import { Link } from "react-router";
@@ -9,7 +10,7 @@ type Props = {
 
 export function PipelineTag({ pipelineId, pipelineName }: Props) {
 	return (
-		<Link to={routes.projects.pipelines.detail.runs(pipelineId)}>
+		<Link to={routes.projects.pipelines.detail.runs(getActiveProjectId(), pipelineId)}>
 			<Tag
 				size="xs"
 				color="purple"

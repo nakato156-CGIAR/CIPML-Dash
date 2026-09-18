@@ -26,7 +26,7 @@ export function ProjectMenu({ projectId }: Props) {
 				<DropdownMenuItem asChild icon={<Settings />}>
 					<Link
 						className="hover:cursor-pointer"
-						to={routes.projects.settings.repositories.overview}
+						to={routes.projects.settings.repositories.overview(projectId)}
 					>
 						Project Settings
 					</Link>

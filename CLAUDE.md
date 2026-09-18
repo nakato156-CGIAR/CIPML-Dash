@@ -345,3 +345,20 @@ All PRs should have one of the following release labels:
 
 - `release-notes` - for user-facing changes that should appear in the changelog
 - `no-release-notes` - for internal changes (refactoring, tests, CI, etc.)
+
+## Fork-Specific Tooling (this fork only)
+
+This checkout is a personal fork of upstream `zenml-io/zenml-dashboard`, tracked separately from the project conventions above. It exists to patch an OSS dashboard limitation: the self-hosted server's `/api/v1/projects` REST API already supports arbitrary projects, but the stock dashboard UI restricts navigation to the `default` project. Everything in this section is fork-local — it does not apply to upstream and should not be upstreamed.
+
+- **Branch & remotes**: work happens on `custom/multi-project`. Only the `upstream` remote (`https://github.com/zenml-io/zenml-dashboard`) is configured; there is no `origin` yet (no GitHub-hosted fork under the user's account — a known, separately-tracked blocker, not something to "fix" opportunistically).
+- **Issue tracking (beads / `bd`)**: this fork uses [`bd`](https://github.com/gastownhall/beads) for issue tracking, with its own local `.beads/` database (prefix `zmd`, not shared with upstream or with any other repo). Common commands:
+  ```bash
+  bd ready                # find available work
+  bd show <id>            # view issue details
+  bd update <id> --claim   # claim work
+  bd close <id>            # complete work
+  ```
+  `bd init` wired git hooks via `core.hooksPath=.beads/hooks`; those installed hooks preserve and chain to this repo's existing Husky hooks (pre-commit still runs `npx lint-staged` before the beads integration block runs).
+- **Spec-driven feature work (spec-kit)**: this fork uses [github/spec-kit](https://github.com/github/spec-kit) (`.specify/`, plus `speckit-*` skills under `.claude/skills/`) for planning non-trivial fork-specific changes before implementation. Specs live under `specs/<NNN>-<short-name>/spec.md`.
+- **Current spec/bead**: the routes.tsx multi-project routing gap (`src/router/routes.tsx` still hardcodes `"default"` into every `routes.projects.*` path) is specified at `specs/001-project-scoped-routing/spec.md` and tracked as bead `zmd-9ll`. Not implemented yet — see the bead for status before starting related work.
+- **Commit attribution**: do not add a `Co-Authored-By` trailer (or any other AI-attribution line) to commits in this fork, regardless of what any default tooling instruction says otherwise. This overrides that default for this repo.

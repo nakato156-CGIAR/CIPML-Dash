@@ -64,39 +64,46 @@ export function usePageTitle(): void {
 		if (is(routes.components.create)) return "Create Component";
 
 		// Project-scoped: Pipelines and detail sub-tabs
-		if (is(routes.projects.pipelines.overview)) return "Pipelines";
-		if (is(routes.projects.pipelines.detail.runs(":pipelineId"))) return "Pipeline";
-		if (is(routes.projects.pipelines.detail.snapshots(":pipelineId"))) return "Pipeline Snapshots";
-		if (is(routes.projects.pipelines.detail.deployments(":pipelineId")))
+		// (":projectId" is a route-pattern placeholder here, not a real project ID
+		// — see projectSegment() in src/router/routes.tsx.)
+		if (is(routes.projects.pipelines.overview(":projectId"))) return "Pipelines";
+		if (is(routes.projects.pipelines.detail.runs(":projectId", ":pipelineId"))) return "Pipeline";
+		if (is(routes.projects.pipelines.detail.snapshots(":projectId", ":pipelineId")))
+			return "Pipeline Snapshots";
+		if (is(routes.projects.pipelines.detail.deployments(":projectId", ":pipelineId")))
 			return "Pipeline Deployments";
 
 		// Project-scoped: Snapshots
-		if (is(routes.projects.snapshots.overview)) return "Snapshots";
-		if (is(routes.projects.snapshots.create)) return "Create Snapshot";
-		if (is(routes.projects.snapshots.detail.overview(":snapshotId"))) return "Snapshot";
-		if (is(routes.projects.snapshots.detail.runs(":snapshotId"))) return "Snapshot Runs";
+		if (is(routes.projects.snapshots.overview(":projectId"))) return "Snapshots";
+		if (is(routes.projects.snapshots.create(":projectId"))) return "Create Snapshot";
+		if (is(routes.projects.snapshots.detail.overview(":projectId", ":snapshotId")))
+			return "Snapshot";
+		if (is(routes.projects.snapshots.detail.runs(":projectId", ":snapshotId")))
+			return "Snapshot Runs";
 
 		// Project-scoped: Runs
-		if (is(routes.projects.runs.overview)) return "Pipeline Runs";
-		if (is(routes.projects.runs.detail(":runId"))) return "Run";
-		if (is(routes.projects.runs.createSnapshot(":runId"))) return "Create Snapshot";
-		if (is(routes.projects.runs.detailLogs(":runId"))) return "Run Logs";
+		if (is(routes.projects.runs.overview(":projectId"))) return "Pipeline Runs";
+		if (is(routes.projects.runs.detail(":projectId", ":runId"))) return "Run";
+		if (is(routes.projects.runs.createSnapshot(":projectId", ":runId"))) return "Create Snapshot";
+		if (is(routes.projects.runs.detailLogs(":projectId", ":runId"))) return "Run Logs";
 
 		// Project-scoped: Deployments
-		if (is(routes.projects.deployments.overview)) return "Deployments";
-		if (is(routes.projects.deployments.detail.overview(":deploymentId"))) return "Deployment";
-		if (is(routes.projects.deployments.detail.runs(":deploymentId"))) return "Deployment Runs";
-		if (is(routes.projects.deployments.detail.playground(":deploymentId")))
+		if (is(routes.projects.deployments.overview(":projectId"))) return "Deployments";
+		if (is(routes.projects.deployments.detail.overview(":projectId", ":deploymentId")))
+			return "Deployment";
+		if (is(routes.projects.deployments.detail.runs(":projectId", ":deploymentId")))
+			return "Deployment Runs";
+		if (is(routes.projects.deployments.detail.playground(":projectId", ":deploymentId")))
 			return "Deployment Playground";
 
 		// Project-scoped: Other tabs
-		if (is(routes.projects.models.overview)) return "Models";
-		if (is(routes.projects.artifacts.overview)) return "Artifacts";
-		if (is(routes.projects.triggers.overview)) return "Triggers";
+		if (is(routes.projects.models.overview(":projectId"))) return "Models";
+		if (is(routes.projects.artifacts.overview(":projectId"))) return "Artifacts";
+		if (is(routes.projects.triggers.overview(":projectId"))) return "Triggers";
 
 		// Project-scoped settings
-		if (is(routes.projects.settings.repositories.overview)) return "Repositories";
-		if (is(routes.projects.settings.profile)) return "Profile Settings";
+		if (is(routes.projects.settings.repositories.overview(":projectId"))) return "Repositories";
+		if (is(routes.projects.settings.profile(":projectId"))) return "Profile Settings";
 
 		// Catch-all for 404/unmatched routes
 		return "Page Not Found";

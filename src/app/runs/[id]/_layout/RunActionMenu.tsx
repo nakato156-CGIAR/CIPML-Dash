@@ -10,6 +10,7 @@ import {
 import { useState } from "react";
 import { DeleteRunAlert } from "./DeleteRunAlert";
 import { Link } from "react-router";
+import { getActiveProjectId } from "@/router/active-project";
 import { routes } from "@/router/routes";
 
 type Props = {
@@ -32,7 +33,7 @@ export function RunActionsMenu({ runId }: Props) {
 				</DropdownMenuTrigger>
 				<DropdownMenuContent className="z-10" align="end" sideOffset={1}>
 					<DropdownMenuItem asChild className="space-x-2">
-						<Link to={routes.projects.runs.createSnapshot(runId)}>
+						<Link to={routes.projects.runs.createSnapshot(getActiveProjectId(), runId)}>
 							<Plus className="h-3 w-3 fill-neutral-400" />
 							<p>New Snapshot</p>
 						</Link>

@@ -3,6 +3,7 @@ import Refresh from "@/assets/icons/refresh.svg?react";
 import { useSnapshotSelectorContext } from "@/components/pipeline-snapshots/selector-context";
 import { SearchField } from "@/components/SearchField";
 import { pipelineSnapshotQueries } from "@/data/pipeline-snapshots";
+import { getActiveProjectId } from "@/router/active-project";
 import { routes } from "@/router/routes";
 import { PipelineSnapshotListQueryParams } from "@/types/pipeline-snapshots";
 import { useQuery } from "@tanstack/react-query";
@@ -35,7 +36,7 @@ export function SnapshotTableToolbar({ params, displayCreateButton = false }: Pr
 				</Button>
 				{displayCreateButton && (
 					<Button className="whitespace-nowrap" asChild size="md">
-						<Link to={routes.projects.snapshots.create}>
+						<Link to={routes.projects.snapshots.create(getActiveProjectId())}>
 							<Plus className="h-5 w-5 shrink-0 fill-white" />
 							<span>Create Snapshot</span>
 						</Link>

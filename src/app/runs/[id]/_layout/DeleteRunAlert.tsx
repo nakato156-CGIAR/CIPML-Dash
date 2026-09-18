@@ -5,6 +5,7 @@ import { AlertDialog, useToast } from "@zenml-io/react-component-library";
 import { useNavigate, useParams } from "react-router";
 import { DeleteAlertContent, DeleteAlertContentBody } from "@/components/DeleteAlertDialog";
 import { useDeleteRun } from "@/data/pipeline-runs/delete-run";
+import { getActiveProjectId } from "@/router/active-project";
 import { routes } from "@/router/routes";
 
 type Props = {
@@ -28,7 +29,7 @@ export function DeleteRunAlert({ open, setOpen }: Props) {
 				rounded: true
 			});
 			setOpen(false);
-			navigate(routes.projects.pipelines.overview);
+			navigate(routes.projects.pipelines.overview(getActiveProjectId()));
 		},
 		onError: (e) => {
 			toast({

@@ -1,4 +1,5 @@
 import Close from "@/assets/icons/close.svg?react";
+import { getActiveProjectId } from "@/router/active-project";
 import { routes } from "@/router/routes";
 import { Button, cn } from "@zenml-io/react-component-library";
 import Joyride, { CallBackProps, EVENTS, Step, TooltipRenderProps } from "react-joyride";
@@ -53,73 +54,78 @@ function ModalComponent({
 	);
 }
 
-const steps: Step[] = [
-	{
-		content:
-			"All your pipelines and runs are now consolidated in one convenient location. Instantly access the DAG for the latest run or browse through the list of runs for each pipeline.",
-		target: "#pipelines-sidebar-link",
-		title: "Pipelines and runs, now together",
-		disableBeacon: true,
-		disableOverlayClose: true,
-		data: {
-			next: routes.stacks.overview
-		}
-	},
-	{
-		content:
-			"Soon you'll enjoy direct access to stacks and stack components through a newly updated interface right from your dashboard. Until then, rely on the CLI for all your needs.",
-		target: "#stacks-sidebar-link",
-		title: "Stacks and components",
-		disableBeacon: true,
-		disableOverlayClose: true
-	},
-	{
-		content: (
-			<div className="w-full space-y-2">
-				<img
-					className="aspect-video object-contain"
-					src={SettingsPreview}
-					alt="Screenshot of the new settings, with a highlight that connects, repositories, and secrets are grouped there now"
-				/>
-				<p>
-					We are preparing new direct management options for repositories, secrets, and connectors
-					now accesible from your server settings. Until then, the CLI can assist you.
-				</p>
-			</div>
-		),
-		target: "#settings-sidebar-link",
-		title: "New home for your repos, secrets and connectors",
-		disableBeacon: true,
-		data: {
-			className: "w-[480px]",
-			next: routes.projects.models.overview
+// A function (not a module-level constant) so `next: routes.projects.models.overview(...)`
+// below resolves against whichever project is active when the tour actually runs, not
+// whichever project happened to be active when this module was first imported.
+function getSteps(): Step[] {
+	return [
+		{
+			content:
+				"All your pipelines and runs are now consolidated in one convenient location. Instantly access the DAG for the latest run or browse through the list of runs for each pipeline.",
+			target: "#pipelines-sidebar-link",
+			title: "Pipelines and runs, now together",
+			disableBeacon: true,
+			disableOverlayClose: true,
+			data: {
+				next: routes.stacks.overview
+			}
 		},
-		disableOverlayClose: true
-	},
-	{
-		content:
-			"Find out more about our advanced ZenML Pro features like model and artifact management.",
-		target: "#models-sidebar-link",
-		title: "OSS is just the beginning",
-		disableBeacon: true,
-		disableOverlayClose: true,
-		data: {
-			next: routes.onboarding
-		}
-	},
-	{
-		content:
-			"Thank you for taking the tour. Your dashboard is now set up and waiting for you. For guidance, visit our documentation or reach out to our community support.",
-		target: "#models-sidebar-link",
-		title: "Ready to Go!",
-		disableBeacon: true,
-		placement: "center",
-		data: {
-			className: "w-[480px]"
+		{
+			content:
+				"Soon you'll enjoy direct access to stacks and stack components through a newly updated interface right from your dashboard. Until then, rely on the CLI for all your needs.",
+			target: "#stacks-sidebar-link",
+			title: "Stacks and components",
+			disableBeacon: true,
+			disableOverlayClose: true
 		},
-		disableOverlayClose: true
-	}
-];
+		{
+			content: (
+				<div className="w-full space-y-2">
+					<img
+						className="aspect-video object-contain"
+						src={SettingsPreview}
+						alt="Screenshot of the new settings, with a highlight that connects, repositories, and secrets are grouped there now"
+					/>
+					<p>
+						We are preparing new direct management options for repositories, secrets, and connectors
+						now accesible from your server settings. Until then, the CLI can assist you.
+					</p>
+				</div>
+			),
+			target: "#settings-sidebar-link",
+			title: "New home for your repos, secrets and connectors",
+			disableBeacon: true,
+			data: {
+				className: "w-[480px]",
+				next: routes.projects.models.overview(getActiveProjectId())
+			},
+			disableOverlayClose: true
+		},
+		{
+			content:
+				"Find out more about our advanced ZenML Pro features like model and artifact management.",
+			target: "#models-sidebar-link",
+			title: "OSS is just the beginning",
+			disableBeacon: true,
+			disableOverlayClose: true,
+			data: {
+				next: routes.onboarding
+			}
+		},
+		{
+			content:
+				"Thank you for taking the tour. Your dashboard is now set up and waiting for you. For guidance, visit our documentation or reach out to our community support.",
+			target: "#models-sidebar-link",
+			title: "Ready to Go!",
+			disableBeacon: true,
+			placement: "center",
+			data: {
+				className: "w-[480px]"
+			},
+			disableOverlayClose: true
+		}
+	];
+}
 
 export function ProductTour() {
 	const { tourState, setTourState } = useTourContext();
@@ -189,7 +195,7 @@ export function ProductTour() {
 					tooltipComponent={ModalComponent}
 					run={tourState.run}
 					stepIndex={tourState.stepIndex}
-					steps={steps}
+					steps={getSteps()}
 				/>
 			</>
 		);

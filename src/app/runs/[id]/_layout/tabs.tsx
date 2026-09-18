@@ -3,6 +3,7 @@
 import DagIcon from "@/assets/icons/dataflow.svg?react";
 import LogIcon from "@/assets/icons/logs.svg?react";
 import { TabIcon } from "@/components/tab-icon";
+import { getActiveProjectId } from "@/router/active-project";
 import { routes } from "@/router/routes";
 import {
 	ScrollArea,
@@ -17,6 +18,7 @@ import { useActivePipelineRunTab } from "./use-active-pipeline-run-tab";
 export function PipelineRunDetailTabs() {
 	const { runId } = useParams() as { runId: string };
 	const activeTab = useActivePipelineRunTab();
+	const projectId = getActiveProjectId();
 
 	return (
 		<Tabs value={activeTab}>
@@ -24,13 +26,13 @@ export function PipelineRunDetailTabs() {
 				<div className="flex items-end justify-between gap-3">
 					<TabsList className="flex-nowrap border-none [&_*]:flex [&_*]:items-center [&_*]:gap-1">
 						<TabsTrigger asChild value="visualization">
-							<Link to={routes.projects.runs.detail(runId)}>
+							<Link to={routes.projects.runs.detail(projectId, runId)}>
 								<TabIcon icon={DagIcon} />
 								<span>Visualization</span>
 							</Link>
 						</TabsTrigger>
 						<TabsTrigger asChild value="logs">
-							<Link to={routes.projects.runs.detailLogs(runId)}>
+							<Link to={routes.projects.runs.detailLogs(projectId, runId)}>
 								<TabIcon icon={LogIcon} />
 								<span>Logs</span>
 							</Link>
