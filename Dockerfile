@@ -13,6 +13,14 @@ FROM node:22-slim AS build
 RUN corepack enable
 WORKDIR /app
 COPY . .
+# Same VITE_API_BASE_URL used by the upstream release.yml build — the
+# dashboard is always served same-origin from zenml-server itself here, so
+# this is a fixed relative path, not something that needs to vary per
+# deployment. Omitting it silently bakes in an empty base URL: every
+# fetch() in the dashboard then hits e.g. "/projects" instead of
+# "/api/v1/projects", 404s, falls through to the SPA's index.html, and the
+# app breaks on load with "Unexpected token '<' ... is not valid JSON".
+ENV VITE_API_BASE_URL=/api/v1
 RUN pnpm install --frozen-lockfile && pnpm build
 
 FROM zenmldocker/zenml-server:0.96.4
