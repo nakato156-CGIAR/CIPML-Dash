@@ -93,6 +93,7 @@ export const apiPaths = {
 		detail: (secretId: string) => `/secrets/${secretId}`
 	},
 	projects: {
+		all: "/projects",
 		statistics: (projectId: string) => `/projects/${projectId}/statistics`,
 		detail: (projectId: string) => `/projects/${projectId}`
 	},
